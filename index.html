@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17253d">
+  <meta name="description" content="Inventario Store: prototipo académico de gestión de inventario">
+  <title>Inventario Store | Control de inventario</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-icon">▦</div><div><strong>Inventario<span>Store</span></strong><small>GESTIÓN INTELIGENTE</small></div></div>
+    <p class="menu-label">MENÚ PRINCIPAL</p>
+    <nav aria-label="Navegación principal">
+      <button class="nav-link active" data-page="resumen" aria-current="page"><span>▦</span> Resumen general</button>
+      <button class="nav-link" data-page="productos"><span>▤</span> Productos</button>
+      <button class="nav-link" data-page="movimientos"><span>⇄</span> Movimientos</button>
+    </nav>
+    <div class="sidebar-bottom"><span class="online-dot"></span> Prototipo académico <small>Datos guardados en este navegador</small></div>
+  </aside>
+  <div class="content-wrap">
+    <header class="topbar"><div class="top-left"><button id="menu-toggle" class="icon-button mobile-only" aria-label="Abrir menú">☰</button><span class="crumb">Sistema de inventario</span><span class="crumb-divider">/</span><strong id="breadcrumb">Resumen general</strong></div><div class="top-right"><span class="today" id="today"></span><span class="avatar" title="Prototipo de demostración">IS</span></div></header>
+    <main class="main">
+      <section id="page-resumen" class="page active">
+        <div class="page-head"><div><div class="eyebrow">PANEL DE CONTROL</div><h1>Resumen general</h1><p>Supervisa el estado de tu inventario de forma rápida y sencilla.</p></div><button class="btn btn-primary" data-go="productos">＋ Nuevo producto</button></div>
+        <div class="stats" id="stats"></div>
+        <div class="two-col"><div class="panel"><div class="panel-header"><div><h2>Estado del inventario</h2><p>Distribución de productos por disponibilidad</p></div></div><div id="stock-visual"></div></div><div class="panel"><div class="panel-header"><div><h2>Alertas de existencias</h2><p>Artículos que requieren atención</p></div><button class="text-action" data-go="productos">Ver productos →</button></div><div id="alerts"></div></div></div>
+        <div class="panel"><div class="panel-header"><div><h2>Movimientos recientes</h2><p>Últimas operaciones realizadas</p></div><button class="text-action" data-go="movimientos">Ver historial →</button></div><div class="table-scroll"><table><thead><tr><th>PRODUCTO</th><th>TIPO</th><th>CANTIDAD</th><th>FECHA</th></tr></thead><tbody id="recent-movements"></tbody></table></div></div>
+      </section>
+      <section id="page-productos" class="page">
+        <div class="page-head"><div><div class="eyebrow">ADMINISTRACIÓN</div><h1>Productos</h1><p>Gestiona tu catálogo y controla las existencias.</p></div><button id="add-product" class="btn btn-primary">＋ Agregar producto</button></div>
+        <div class="panel"><div class="panel-header wrap-head"><div><h2>Catálogo de productos</h2><p id="products-count">Productos registrados</p></div><div class="filters"><label class="sr-only" for="search">Buscar producto</label><input id="search" type="search" placeholder="⌕  Buscar por código o nombre..."><label class="sr-only" for="filter">Filtrar por estado</label><select id="filter"><option value="todos">Todos los estados</option><option value="disponible">Disponibles</option><option value="bajo">Stock bajo</option><option value="agotado">Agotados</option></select></div></div><div class="table-scroll"><table><thead><tr><th>CÓDIGO</th><th>PRODUCTO</th><th>PRECIO UNITARIO</th><th>STOCK</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody id="products-table"></tbody></table></div></div>
+      </section>
+      <section id="page-movimientos" class="page">
+        <div class="page-head"><div><div class="eyebrow">CONTROL DE STOCK</div><h1>Movimientos</h1><p>Registra entradas y salidas de productos con seguridad.</p></div></div>
+        <div class="movement-layout"><div class="panel"><div class="panel-header"><div><h2>Registrar movimiento</h2><p>Completa los datos de la operación</p></div></div><form id="movement-form" class="form-body"><label for="mov-product">Producto <span class="required">*</span></label><select id="mov-product" required><option value="">Selecciona un producto</option></select><p class="helper" id="current-stock">Selecciona un producto para ver su disponibilidad.</p><label for="mov-type">Tipo de movimiento <span class="required">*</span></label><select id="mov-type" required><option value="entrada">↑ Entrada de inventario</option><option value="salida">↓ Salida de inventario</option></select><label for="mov-quantity">Cantidad <span class="required">*</span></label><input type="number" id="mov-quantity" min="1" step="1" placeholder="Ej. 5" required><label for="mov-note">Observación (opcional)</label><textarea id="mov-note" rows="3" maxlength="200" placeholder="Motivo del movimiento..."></textarea><button type="submit" class="btn btn-primary full">Confirmar movimiento</button></form></div>
+        <div class="panel"><div class="panel-header"><div><h2>Historial de movimientos</h2><p>Registro de entradas y salidas</p></div></div><div class="table-scroll"><table><thead><tr><th>PRODUCTO</th><th>TIPO</th><th>CANT.</th><th>FECHA</th><th>NOTA</th></tr></thead><tbody id="movements-table"></tbody></table></div></div></div>
+      </section>
+      <footer>Inventario Store · Prototipo académico · Sin conexión a base de datos</footer>
+    </main>
+  </div>
+</div>
+<div id="overlay" class="overlay" hidden></div>
+<dialog id="product-dialog" aria-labelledby="modal-title"><form id="product-form"><div class="modal-header"><div><h2 id="modal-title">Nuevo producto</h2><p>Completa la información del artículo.</p></div><button type="button" id="close-dialog" class="close-button" aria-label="Cerrar">✕</button></div><div class="form-body"><input type="hidden" id="edit-id"><label for="p-code">Código del producto <span class="required">*</span></label><input id="p-code" type="text" maxlength="20" placeholder="Ej. P006" required><label for="p-name">Nombre del producto <span class="required">*</span></label><input id="p-name" type="text" maxlength="90" placeholder="Ej. Cuaderno universitario" required><div class="field-grid"><div><label for="p-price">Precio unitario <span class="required">*</span></label><input id="p-price" type="number" step="0.01" min="0" placeholder="0.00" required></div><div><label for="p-stock">Existencias iniciales <span class="required">*</span></label><input id="p-stock" type="number" step="1" min="0" placeholder="0" required></div></div><p class="helper">Los precios son demostrativos y no tienen moneda asignada.</p></div><div class="modal-footer"><button type="button" class="btn btn-ghost" id="cancel-dialog">Cancelar</button><button type="submit" class="btn btn-primary">Guardar producto</button></div></form></dialog>
+<div role="status" aria-live="polite" id="toast" class="toast" hidden></div>
+</body>
+</html>
